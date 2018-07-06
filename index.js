@@ -5,7 +5,7 @@ import { screenDimensions } from './config'
 const screenWidth = screenDimensions.width
 const screenHeight = screenDimensions.height
 
-export default class example_360 extends React.Component {
+export default class App extends React.Component {
   state = {
     translation: 0
   }
@@ -67,4 +67,4 @@ const styles = StyleSheet.create({
   }
 })
 
-AppRegistry.registerComponent('example_360', () => example_360)
+AppRegistry.registerComponent('App', () => App)

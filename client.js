@@ -18,7 +18,7 @@ function init(bundle, parent, options = {}) {
 
   // Render your app content to the default cylinder surface
   r360.renderToSurface(
-    r360.createRoot('example_360', {
+    r360.createRoot('App', {
       /* initial props */
     }),
     s
