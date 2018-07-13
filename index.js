@@ -1,47 +1,59 @@
 import React from "react";
 import { AppRegistry, StyleSheet, Text, View } from "react-360";
 import { screenDimensions } from "./config";
+import makeGame from "./snake";
 
 const screenWidth = screenDimensions.width;
 const screenHeight = screenDimensions.height;
-
+const gameWidth = 60;
+const gameHeight = 10;
+const cellWidth = screenWidth / gameWidth;
+const cellHeight = screenHeight / gameHeight;
+const widthArray = new Array(gameWidth).fill();
+const heightArray = new Array(gameHeight).fill();
+const isSnake = (x, y, snake) => {
+  return snake.reduce(
+    (accum, [snakeX, snakeY]) => accum || (x === snakeX && y === snakeY),
+    false
+  );
+};
 export default class App extends React.Component {
-  state = {
-    translation: 0
-  };
+  constructor(props) {
+    super(props);
+    this.game = makeGame(gameWidth, gameHeight);
+    this.direction = "RIGHT";
+    this.state = this.game.next(this.direction);
+  }
   componentDidMount() {
     setInterval(() => {
-      this.setState(({ translation }) => {
-        let multiplier = translation <= 0 ? -1 : 1;
-        console.log(translation, -screenWidth / 2, screenWidth / 2);
-        if (translation < -screenWidth / 2) {
-          return {
-            translation: screenWidth / 2
-          };
-        } else if (translation > screenWidth / 2) {
-          return {
-            translation: -screenWidth / 2
-          };
-        }
-        return {
-          translation: translation - 10
-        };
-      });
-    }, 50);
+      this.setState(this.game.next(this.direction));
+    }, 500);
   }
   render() {
-    const { translation } = this.state;
-    console.log(translation);
+    const { snake, food } = this.state;
+
     return (
       <View style={styles.panel}>
-        <View
-          style={[
-            styles.snakeContainer,
-            { transform: [{ translate: [translation, 0, 0] }] }
-          ]}
-        >
-          <Text style={styles.snake}>I'm a snakeeeeeeeeeeeeeeee</Text>
-        </View>
+        {heightArray.map((_, y) => (
+          <View style={{ flexDirection: "row" }}>
+            {widthArray.map((_, x) => {
+              const color = isSnake(x, y, snake) ? "black" : "transparent";
+
+              return (
+                <View
+                  key={`${x}-${y}`}
+                  style={{
+                    borderColor: "red",
+                    backgroundColor: color,
+                    borderWidth: 1,
+                    width: cellWidth,
+                    height: cellHeight
+                  }}
+                />
+              );
+            })}
+          </View>
+        ))}
       </View>
     );
   }
